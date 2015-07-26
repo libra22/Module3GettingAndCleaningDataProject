@@ -1,18 +1,4 @@
-#data is initially seperated into trainig n test
-#combine 3 files by column for each set. should have 561 columns
-#then combine both sets. should have 10299 rows
-# subset only the mean and std columns #grep() can use to search columns names like "mean"
-# convert the activities code to actual activities names
-# set the labels for variable
-# create a 2nd tidy data set that is average for each activity for each subject
-
-#tips: rename/add labels first. then extract, then merge.then finally create the 2nd tidy file
-
-# readme is to explain how to run the code
-# codebook is to describe the data
-
-#set working directory for current use. comment it when uploading
-setwd("C:/Users/BPM/Downloads/DataScience/Assignment/M03-A1")
+##run_analysis.R by M Poobalan 25 July 2015.
 
 #download and extract files
 ##Example:
@@ -109,28 +95,3 @@ colnames(TidyData) <- tempcolnames
 
 #write to text file
 write.table(TidyData,file="TidyData.txt",row.names = FALSE)
-
-# -----------------------------------------------------
-#reference
-names(dpMeanStd)<-gsub("BodyBody", "Body", names(dpMeanStd))
-names(dpMeanStd)
-
-MeanStdColumns <- grep("mean|std", featurelist$V2, value = FALSE) 
-MeanStdColumnsNames <- grep("mean|std", featurelist$V2, value = TRUE)
-dpMeanStd<-dp[,c("Subject","ActivityName",MeanStdColumnsNames)]
-
-tidydata <- aggregate(dpMeanStd,list(dpMeanStd$Subject,dpMeanStd$ActivityName),mean)
-tidyData <- aggregate(. ~Subject + ActivityName, dpMeanStd, mean)
-
-
-write.table(dp2,file="dp2.txt",sep=",", col.names = TRUE)
-dp3 <-read.table("dp2.txt",header = TRUE,sep = ",")
-
-distinct(dpy,V1)
-dpactivity <- tbl_df(activitylabel)
-
-xx<- mutate(dpy, V1 = ifelse(V1 == 5, "Walk", V1))
-dpNamed <- data.frame()
-dpNamedY <- tbl_df(dpNamed)
-dpNamedY <- mutate(dpy, V1 = ifelse(V1 == 1, activitylabel[[2]][[1]], V1))
-dpNamedY <- mutate(dpNamedY, V1 = ifelse(V1 == 2, activitylabel[[2]][[2]], V1))
