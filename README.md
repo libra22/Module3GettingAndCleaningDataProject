@@ -26,12 +26,16 @@ file.rename("UCI HAR Dataset","data")
 For example, if your working directory is `/Users/Balan/Project1`, then the following files should be installed/found in that directory:
 
 /Users/Balan/Project1/run_analysis.R
+
 /Users/Balan/Project1/CodeBook.md
+
 /Users/Balan/Project1/README.md
+
 /Users/Balan/Project1/UCI_HAR.zip
+
 /Users/Balan/Project1/data/(multiple files herein)
 
-The output file will also be written to this directory.
+The output file `TidyData.txt` will also be written to this directory.
 
 Within the `data` folder, the following files/folders are found:
 ================================================================
@@ -65,7 +69,7 @@ The following files are available for the train and test data. Their description
 NOTE:
 * for this project, the files in `Inertial Signal` folders are not used as its used to derive the training and test datasets (`X_train.txt` and `X_test.txt`)
 
-##Read the text files
+##Read the text files into data frame
 Read the relevant 8 files as follows:
 
 * features.txt - list of features (variables) which consist of 561 items
@@ -88,8 +92,10 @@ Ytrain <- read.table("./data/train/y_train.txt",header = FALSE,stringsAsFactors 
 subjecttrain <- read.table("./data/train/subject_train.txt",header = FALSE,stringsAsFactors = FALSE)
 ```
 
-##Using dplyr package
-To simplify tidying data, dplyr package is used. If the package is not available, the script will download and install. convert the datasets into tbl_df 
+##Processing the data frames
+
+###Using dplyr package
+To simplify tidying data, dplyr package is used. If the package is not available, the script will download and install dplyr. Next, the script converts the datasets into tbl_df.
 
 ```
 if (!require("dplyr")) install.packages("dplyr")
@@ -105,7 +111,7 @@ dpsubjecttest <- tbl_df(subjecttest)
 dpsubjecttrain <- tbl_df(subjecttrain)
 ```
 
-##Rename the values in 
+###Rename the activity column values in dpytest and dpytraining from the activity code to activity name as per listed in activitylabel. For example, "1" will be replaced by "WALKING" and so on.
 
 ```
 for (i in 1:nrow(activitylabel))
@@ -114,6 +120,92 @@ for (i in 1:nrow(activitylabel))
   dpytrain <- mutate(dpytrain, V1 = ifelse(V1 == i, activitylabel[[2]][[i]], V1))
 }
 ```
+
+###Combine the 6 files into 2 files (training and test)
+For each group of data, combine the subjects, Y and X tbl_df objects using bind_cols. Each tbl_df will now contain 563 variables (1 from subject, 1 from Y, and 561 from X).
+
+```
+dptest <- bind_cols(dpsubjecttest,dpytest,dpxtest)
+dptrain <- bind_cols(dpsubjecttrain,dpytrain,dpxtrain)
+```
+
+###Rename column names
+Rename the columns to Subject (1st column), ActivityName (2nd column), and the rest of the columns as numbers from 1 to 561. The numbered columns is done for purpose of combining the two datasets later.
+```
+colnames(dptrain)<- c("Subject","ActivityName",1:561)
+colnames(dptest)<- c("Subject","ActivityName",1:561)
+```
+
+###Combine test and train data
+Combine test and train data using bind_rows into single tbl_df named dp.
+```
+dp <- bind_rows(dptest,dptrain)
+```
+
+###Rename column names
+Rename the column names again, this time repeating the same name for first two columns, and replacing the balance columns names with corresponding rows in featurelist. After this, all the column names will have descriptive names.
+```
+colnames(dp)<- c("Subject","ActivityName",featurelist[[2]])
+```
+
+###Remove unnecessary objects
+For purpose of clearing up memory and having cleaner environment, the unused objects are removed
+```
+remove("activitylabel","Xtest","Xtrain","Ytest","Ytrain","i","subjecttrain","subjecttest","featurelist","dpytrain","dpytest","dpxtrain","dpxtest","dptest","dptrain","dpsubjecttest","dpsubjecttrain")
+```
+
+At the end of this stage, a single tbl_df named dp will have 10299 observations and 563 named columns.
+
+##Creating tidy data
+The following codes extract, calculate and create the tidy data set.
+
+###Extract mean and std columns 
+Extract the mean and std columns as per the project requirement. for the purpose of this project, only those variables with mean(), std(), meanFreq() are considered while those within angle() are not as these are derived from other variables. A total of 79 columns are extracted, and together with Subject and ActivityName columns, gives a 81 column dataset.
+
+```
+dpMeanStd<-dp[,c("Subject","ActivityName",grep("mean|std", colnames(dp), value = TRUE))]
+```
+
+###Convert to factor
+Subject and ActivityName columns are made into factors so that these columns can be used for grouping.
+```
+dpMeanStd$ActivityName <- as.factor(dpMeanStd$ActivityName)
+dpMeanStd$Subject <- as.factor(dpMeanStd$Subject)
+```
+
+###Create grouped table
+The dataset is grouped by Subject and ActivityName for easier aggregation of data in next step.
+```
+dpGrp<-group_by(dpMeanStd,Subject,ActivityName)
+```
+
+###Create summarised data.
+Using the grouped dataset, mean for each of the balance 79 columns is calculated, using summarise_each. This new dataset set is stored in TidyData.
+```
+TidyData<-summarise_each(dpGrp,funs(mean))
+```
+
+###Update column name of tidy data
+The column names of 3rd till 81st columns are appended with "Avg." to reflect that its the mean value of grouped dataset.
+```
+tempcolnames<-colnames(TidyData)
+i <- 3
+for (i in 3:length(tempcolnames))
+  {
+    tempcolnames[i]= paste("Avg.",tempcolnames[i],sep = "")
+  }
+colnames(TidyData) <- tempcolnames
+```
+
+###Write to text file
+Write the tidy data to 'TidyData.txt' in the current working directory.
+```
+write.table(TidyData,file="TidyData.txt",row.names = FALSE)
+```
+
+
+
+
 
 ##Reference
 ============

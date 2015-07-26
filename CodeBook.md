@@ -1,7 +1,7 @@
 #Codebook for Course Project - Human Activity Recognition Using Smartphones Data Set
 
 ##Introduction
-This codebook describes the variables listed in the 'TidyData.txt' file. 'TidyData.txt' is the output from run-analysis.R which processes the raw datasets and product a tidy dataset.
+This codebook describes the variables listed in the `TidyData.txt` file. `TidyData.txt` is the output from run-analysis.R which processes the raw datasets and product a tidy dataset.
 
 
 ##Raw Data
@@ -18,9 +18,9 @@ The accompanying run_analysis.R file processes the training and test dataset dow
 the data file consist of the following 81 features (variables):
 
 NOTE: 
-* Features are normalized and bounded within [-1,1].
-* The units used for the accelerations (total and body) are 'g's (gravity of earth -> 9.80665 m/seg2)
-* The gyroscope units are rad/seg.
+  i. Features are normalized and bounded within [-1,1].
+ ii. The units used for the accelerations (total and body) are 'g's (gravity of earth -> 9.80665 m/seg2)
+iii. The gyroscope units are rad/seg.
 
 
 1. Subject - Range between 1 and 30, representing 30 individuals who participated in the activities
