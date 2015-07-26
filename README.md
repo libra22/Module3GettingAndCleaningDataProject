@@ -38,7 +38,7 @@ For example, if your working directory is `/Users/Balan/Project1`, then the foll
 The output file `TidyData.txt` will also be written to this directory.
 
 Within the `data` folder, the following files/folders are found:
-================================================================
+----
 
 - 'README.txt'
 
