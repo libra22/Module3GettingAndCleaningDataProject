@@ -1,29 +1,13 @@
 ##run_analysis.R by M Poobalan 25 July 2015.
+##============================================
 
-#download and extract files
-##Example:
-
-##The R script and codebook are at /home/me/tidydata. The UCI data archive is downloaded to the same directory and its contents extracted so that the data files are in the subdirectory named UCI_HAR, for instance.
-
-##/home/me/tidydata
-##/home/me/tidydata/myscript.R
-##/home/me/tidydata/mycodebook.md
-##/home/me/tidydata/dataarchive.zip
-##/home/me/tidydata/UCI_HAR/(multiple files herein)
-
-##The download.file() function in your script could reference the location to store dataarchive.zip by
-##> download.file("url_to_fetch_archive", "./dataarchive.zip", method = "curl") #method not needed for Microsoft Windows users
-
-##Notice the dot followed by the forward slash? That means "in the current directory." By keeping everything relative to your working directory there will not be any location specific prefixes. if you hard-coded the fully-qualified path as "/home/me/tidydata/dataarchive.zip" then anyone else would get an error message when attempting to run your script unless they editing the script (a very bad idea for reproducible research) to point to a valid location on their computer's file system.
-
-##As a side note if you wanted to store the dataarchive.zip file in a subdirectory named "data" your script would have to create the subdirectory, dir.create("./data"), again using a relative path from the working directory, download the file, download.file("url", "./data/dataarchive.zip", method= "curl"),  and then unzip("./data/dataarchive.zip", exdir = "./data/UCI_HAR"), and eventually to read one of the extracted data files, say datafile.csv, you would read.csv("./data/UCI_HAR/datafile.csv"). This allows anyone to run your R script unmodified on their computer and the data files end up in the same location relative to the their own current working directory, getwd().
-
+#download and extract files into working directory. rename the unzipped folder to "data"
 fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 download.file(fileURL,destfile=("UCI_HAR.zip"))
 unzip("UCI_HAR.zip")
 file.rename("UCI HAR Dataset","data")
 
-# read the data files
+# read the data files. 8 files in total. 3 for each training and test, and 2 reference files (features.txt and activity_labels.txt)
 featurelist <- read.table("./data/features.txt",header = FALSE,stringsAsFactors = FALSE)
 activitylabel <- read.table("./data/activity_labels.txt",header = FALSE,stringsAsFactors = FALSE)
 Xtest <- read.table("./data/test/X_test.txt",header = FALSE,stringsAsFactors = FALSE)
@@ -33,28 +17,26 @@ Xtrain <- read.table("./data/train/X_train.txt",header = FALSE,stringsAsFactors 
 Ytrain <- read.table("./data/train/y_train.txt",header = FALSE,stringsAsFactors = FALSE)
 subjecttrain <- read.table("./data/train/subject_train.txt",header = FALSE,stringsAsFactors = FALSE)
 
-#use dplyr
+#use dplyr. install if not found.
 if (!require("dplyr")) install.packages("dplyr")
 library(dplyr)
 
-#create tbldf of Xtest
+#create tbldf test and train datasets (X,Y,subject)
 dpxtest <- tbl_df(Xtest)
 dpxtrain <- tbl_df(Xtrain)
-
-#create tbldf of Ytest
 dpytest <- tbl_df(Ytest)
 dpytrain <- tbl_df(Ytrain)
+dpsubjecttest <- tbl_df(subjecttest)
+dpsubjecttrain <- tbl_df(subjecttrain)
 
-#rename values in ytest from number to activity names
+#rename values in dpytest and dpytrain from number to activity names
 for (i in 1:nrow(activitylabel))
 {
   dpytest <- mutate(dpytest, V1 = ifelse(V1 == i, activitylabel[[2]][[i]], V1))
   dpytrain <- mutate(dpytrain, V1 = ifelse(V1 == i, activitylabel[[2]][[i]], V1))
 }
 
-#create tbldf of subject test
-dpsubjecttest <- tbl_df(subjecttest)
-dpsubjecttrain <- tbl_df(subjecttrain)
+
 
 #combine 3 files of each set into one file (one each for test and train)
 dptest <- bind_cols(dpsubjecttest,dpytest,dpxtest)

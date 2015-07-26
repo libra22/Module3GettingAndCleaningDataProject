@@ -9,17 +9,17 @@ The raw data for this project is available at [UCI website download] (https://ar
 
 The website for the dataset is [UCI HAR] (https://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones)
 
-The script file will download, extract and store the raw data files in a 'data' folder of your working directory. All subsequent processing is dependent on the raw data being stored in the 'data' folder of the current working directory.
+The script file will download, extract and store the raw data files in a `data` folder of your working directory. All subsequent processing is dependent on the raw data being stored in the `data` folder of the current working directory.
 
 ##Tidy Data
 The accompanying run_analysis.R file processes the training and test dataset downloaded as above and returns a tidy data that consist of 180 observations and 81 variables.
 
 ##Variables
-the data file consist of the following 81 variables:
+the data file consist of the following 81 features (variables):
 
 NOTE: 
 * Features are normalized and bounded within [-1,1].
-* The units used for the accelerations (total and body) are 'g's (gravity of earth -> 9.80665 m/seg2).
+* The units used for the accelerations (total and body) are 'g's (gravity of earth -> 9.80665 m/seg2)
 * The gyroscope units are rad/seg.
 
 
@@ -104,3 +104,6 @@ NOTE:
 79. Avg.fBodyBodyGyroJerkMag-mean() - average of mean of the frequency components Jerk signal (derived using a Fast Fourier Transform (FFT)) magnitude (calculated using the Euclidean norm) for body gyroscope (angular velocity)
 80. Avg.fBodyBodyGyroJerkMag-std() - average of standard deviation of the frequency components Jerk signal (derived using a Fast Fourier Transform (FFT)) magnitude (calculated using the Euclidean norm) for body gyroscope (angular velocity)
 81. Avg.fBodyBodyGyroJerkMag-meanFreq() - average of Weighted average of the frequency components Jerk signal (derived using a Fast Fourier Transform (FFT)) magnitude (calculated using the Euclidean norm) for body gyroscope (angular velocity)
+
+##Reference
+Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. A Public Domain Dataset for Human Activity Recognition Using Smartphones. 21th European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning, ESANN 2013. Bruges, Belgium 24-26 April 2013.
