@@ -15,12 +15,15 @@ The script file will download, extract and store the raw data files in a `data` 
 The accompanying run_analysis.R file processes the training and test dataset downloaded as above and returns a tidy data that consist of 180 observations and 81 variables.
 
 ##Variables
-the data file consist of the following 81 features (variables):
+The data file consist of the following 81 features (variables):
 
 NOTE: 
   i. Features are normalized and bounded within [-1,1].
+
  ii. The units used for the accelerations (total and body) are 'g's (gravity of earth -> 9.80665 m/seg2)
+
 iii. The gyroscope units are rad/seg.
+
 
 
 1. Subject - Range between 1 and 30, representing 30 individuals who participated in the activities

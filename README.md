@@ -111,7 +111,8 @@ dpsubjecttest <- tbl_df(subjecttest)
 dpsubjecttrain <- tbl_df(subjecttrain)
 ```
 
-###Rename the activity column values in dpytest and dpytraining from the activity code to activity name as per listed in activitylabel. For example, "1" will be replaced by "WALKING" and so on.
+###Change activity column values
+The column names in dpytest and dpytraining are changed from the activity code to activity name as per listed in activitylabel. For example, "1" will be replaced by "WALKING" and so on.
 
 ```
 for (i in 1:nrow(activitylabel))
@@ -143,7 +144,7 @@ dp <- bind_rows(dptest,dptrain)
 ```
 
 ###Rename column names
-Rename the column names again, this time repeating the same name for first two columns, and replacing the balance columns names with corresponding rows in featurelist. After this, all the column names will have descriptive names.
+Rename the column names again, this time repeating the same name for first two columns, and replacing the balance columns names with corresponding rows in featurelist. After this step, all the column names will have descriptive names.
 ```
 colnames(dp)<- c("Subject","ActivityName",featurelist[[2]])
 ```
@@ -154,13 +155,13 @@ For purpose of clearing up memory and having cleaner environment, the unused obj
 remove("activitylabel","Xtest","Xtrain","Ytest","Ytrain","i","subjecttrain","subjecttest","featurelist","dpytrain","dpytest","dpxtrain","dpxtest","dptest","dptrain","dpsubjecttest","dpsubjecttrain")
 ```
 
-At the end of this stage, a single tbl_df named dp will have 10299 observations and 563 named columns.
+At the end of this stage, a single tbl_df named 'dp' will have 10299 observations and 563 named columns.
 
 ##Creating tidy data
 The following codes extract, calculate and create the tidy data set.
 
 ###Extract mean and std columns 
-Extract the mean and std columns as per the project requirement. for the purpose of this project, only those variables with mean(), std(), meanFreq() are considered while those within angle() are not as these are derived from other variables. A total of 79 columns are extracted, and together with Subject and ActivityName columns, gives a 81 column dataset.
+Extract the mean and std columns as per the project requirement. For the purpose of this project, only those variables with mean(), std(), and meanFreq() are considered while those within angle() are not as these are derived from other variables. A total of 79 columns are extracted, and together with Subject and ActivityName columns, gives a 81 column dataset.
 
 ```
 dpMeanStd<-dp[,c("Subject","ActivityName",grep("mean|std", colnames(dp), value = TRUE))]
@@ -208,7 +209,6 @@ write.table(TidyData,file="TidyData.txt",row.names = FALSE)
 
 
 ##Reference
-============
 Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. A Public Domain Dataset for Human Activity Recognition Using Smartphones. 21th European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning, ESANN 2013. Bruges, Belgium 24-26 April 2013.
 
 Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
